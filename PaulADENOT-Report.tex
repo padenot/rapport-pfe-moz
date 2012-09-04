@@ -45,7 +45,6 @@ fonctionnalités media dans Gecko}}}
 
 \begin{document}
 \maketitle
-\begin{multicols}{2}
 \subsection*{Entreprise d'accueil:}
 \noindent
 Mozilla Corporation\\
@@ -59,22 +58,30 @@ USA\\
 Előd \textsc{Egyed-Zsigmond}
 
 \section*{Résumé}
-
+La fondation Mozilla est une organisation à but non lucratif qui a pour but de
+promouvoir un Web ouvert à tous, par l'intermédiaire de son produit phare,
+le navigateur web Firefox. Durant ce stage, de nouvelles fonctionnalités dans
+le composant media du logiciel ont été implémentés, ainsi que des optimisation
+de la vitesse de rendu des documents. Il sera aussi évoqué les processus
+particuliers de travail que l'entreprise a adopté, ainsi que ses relation avec
+les organismes de standardisation des normes qui font le web, de nos jour.
 
 \section*{Mots-clefs}
-
+Mozilla, logiciel libre, media, thread, codec, travail distribué,
+réechantillonage, time-stretching, type MIME, media query, box blur, dégradé,
+spécification, Web.
 \section*{Abstract}
-This paper synthesizes the state of the field of medical informatics, through
-the analyse of four papers. Main problems and challenge encountered when
-developing IT systems for medical professionals are presented, as well as
-solutions researchers have found. A parallel is drawn with the sibling field of
-Information System development, and with Agile software development. Several
-characteristics of successful projects are isolated, and are debated along with
-known best practices of the software industry.
+The Mozilla Foundation is a non-profit organization whose goal is to promote a
+open Web, by creating and maintining its main product, the Firefox web browser.
+During this internship, new features of the media component of Firefox have been
+implemented, along with a few optimizations of the rendering speed of documents.
+There will be mention of the particular processes the organization had to adopt,
+and its relation to the organizations that write the specifications for the web
+technologies.
 
 \section*{Keywords}
-
-\columnbreak
+Mozilla, free software, media, thread, codec, remote working, resampling,
+time-stretching, MIME type, media query, box blur, gradient, specification, web.
 
 {\footnotesize
 \tableofcontents
@@ -82,295 +89,11 @@ known best practices of the software industry.
 
 \clearpage
 
-\section{Introduction}
+\begin{multicols}{2}
 
-Human-computer interaction takes nowadays an important part of our lives.
-However, in the workplace, while computers are omnipresent, numerous are the
-uses of technology which could be improved. By trying to modernise the way
-people
-work using technology, professionals are facing numerous problems.
-This paper will focus particularly on the healthcare domain, and will look,
-through four %XXX
-papers, at the state of the technology in hospitals, from different points of
-view: IT professionals, healthcare professionals, and HCI researchers. While
-there is interesting technical challenges to solve, we will particularly focus
-on the \emph{social} aspect of the problems: the relations between users and
-professionals, the impact of the technology on the care given by the healthcare
-professionals, and related concerns.
 
-\section{Main challenges}
-
-The field of Human-Computer interaction is facing numerous challenges in the
-domain of medical informatics.
-While other domains have been fully equipped in IT solutions for years, it seems
-that the healthcare industry is lagging behind.
-
-At first sight, the methodological findings in this field seem to be
-\emph{rediscoveries}, reading the papers studied in the different seminars.
-Ideas are often not far from the agile management basic principles, which was
-formalised in 2001\cite{AgileManifesto} for the software domain, but was
-informally used (or at least partly) several years before that.
-
-These main challenges are:
-\begin{itemize}
-  \item The current level of acceptance rate by the professionals of the new
-  system proposition is too low. This results either in waste of money if the % XXX
-  solution is not used, or a waste of time, and users frustrations, if the
-  solution is used.
-  \item The productivity needs to be increased, as well as the level of the care,
-  in term of quality. The technical solution should not be an obstacle to giving % XXX
-  of care.
-  \item The IT industry often wants to push technology in the hospitals, more % XXX
-  than they want people to be taken care of. % o rly ?
-  \item In an hospital, bureaucracy and politics are very hard to work with.
-  Often, management and medical staff have different goals in mind when it    %XXX
-  comes to decide of a new IT system.
-  \item Medical staff time is very valuable, it is difficult to justify the use
-  of their time to test a new system or conducting interviews, while they could %XXX
-  be giving care to needy people.
-  \item Reliability is important, failure (or even slowdown) are not acceptable
-  for many applications. The healthcare domain wants proofs before any action is
-  taken. The current research are still trying to find factual proofs for       %XXX
-  methods. \emph{Best practices} used in other domains may not be applicable
-  in the healthcare industry.
-  \item The systems should be able to cope with the heterogeneous level when it
-  comes to working with computers of the medical staff. Most of the               %XXX
-  professionals are not trained for advanced computer usage (this point beginning
-  to get gradually better, thanks to the introduction of new technologies at
-  home, as stated by \cite{IndiaEMR} and \cite{UsersAward2}).
-  \item The system should be able to scale among the entire organisation.
-\end{itemize}
-
-In the next sections, attempts to answer these challenges will be discussed.
-\section{Problems area}
-
-\subsection{Users}
-At first sight, it seems natural in the healthcare domain, to use a user-centric
-design. However, this rather old and proven way of building a solution didn't
-appear immediately to the researchers. Indeed, while in other domain, solution
-design that incorporate the end-user very early in the process is often used, it
-hasn't been used in the first deployment related in \cite{IndiaEMR}, and
-that led to a total rejection of the system by the end users.
-
-Agile method users claim that their method responds to this kind of problems.
-The manifesto \cite{AgileManifesto} states, among other principles:
-
-\begin{quote}
-«~\emph{Our highest priority is to satisfy the customer through early and
-continuous delivery of valuable software.}~»
-\end{quote}
-
-\begin{quote}
-«~\emph{Business people and developers must work together daily throughout the
-project.}~»
-\end{quote}
-
-\emph{Business people} here should be understood as people from the business
-where the solution is going to be deployed in, medical staff in our case.
-
-However, often, medical staff cannot be part of the whole experiment, the
-workload on a day-to-day basis does not allow them to work even more, so they
-must somehow cut on the time they allocate to the care, and participate to these
-experiments. The concept of an \emph{agile champion} can help answer to this
-concern. One person volunteers to be the representative of the team (let's say, a
-nurse among all the nurses), and is involved in the whole process of change,
-giving insights, gives feedback, and bridges the medical staff and the people
-who are building the system. While the term \emph{agile champion} is not used,
-this is certainly the concept that is used in \cite{IndiaEMR}, bringing
-acceptance where the previous method failed, possibly because of lack of
-communication, or a lack of knowledge of the business rules.
-
-However, \cite{Hasvold2011} shows an example where user involvement lead to
-failure, which shows that user insight and suggestions should be taken with
-precaution. The nurses have asked for a system, which was built for them, and
-promptly rejected afterwards. That shows that blindly following user demand is
-not a good solution either. Moreover, often, people don't know what they want,
-and don't come up with innovative solutions. A person whose job is to build
-system for hospitals is more likely to have pioneering ideas than a doctor, as
-stated by this famous quote, by Henry Ford:
-
-\begin{quote}
-  «~\emph{If I'd asked customers what they wanted, they would have said ``a
-  faster horse''.}~»
-\end{quote}
-
-We have seen in \cite{IndiaEMR} and \cite{Jalote2010} that the
-innovation came from the technology industry, which tried to use new products in
-the workplace in order to try to improve productivity. While it can be bad to
-push technology in order to drive the innovation in the health-care domain when
-it is not needed, pushing medical professionals a little, to show them new
-products, new ideas, new ways or working, and see reaction has shown to be
-beneficial. Even in the case of failure, like in \cite{Hasvold2011}, the use
-of agile methods enables the project to pivot rapidly to a new system (which is
-the flat-screen display in the nurse HQ), which gets general approbation.
-
-This brings us to the question of the amount of \emph{trust} we put in the users of
-the system. Taking a step back from all these methods and considerations, it can
-be concluded that as scientists, teams should not \emph{trust} users. They
-should build solutions upon quantitative and comprehensive data, gathered by
-field studies or other means. However, sometime, the only way to gather data,
-and to see what works and what doesn't is to try something and to fail, as presented in
-\cite{Hasvold2011}.
-
-Finally, we see that a user-centric design using an agile approach can be
-applied (and has been applied) with success several times, leveraging the work
-done in the software industry. However, the design, here, is not really
-\emph{user}-centric. The ultimate goal, being improving the quality of the care
-given by the professionals, should always be remembered. The method employed is
-therefore more of a \emph{patient-centric} design than a \emph{user-centric}
-design.
-
-\subsection{Youth and particularities of the domain}
-The domain of medical informatics is quite young, and, where one could think
-that it can leverage the decades of studies on methodologies done in the software development
-industry, the requirements needed by hospitals make difficult
-taking all the knowledge available for granted. Hence, there is a need for some
-\emph{rediscoveries}, which could pass as the researchers where reinventing the
-wheel. However, we see in \cite{Hasvold2011} that the team uses the Scrum method
-successfully, so some can of reuse can be performed.
-
-Moreover, in order to make changes in the organisation of an hospital (which is
-likely to happen, see~\ref{mapping}), hierarchy in hospital often being rigid,
-it is necessary to have factual proofs that the changes are going to improve
-a process. Momentum must be accumulated, little by little, by research papers,
-which are indeed factual proof, given they contain quantitative
-data, which is not always the case (\cite{Hasvold2011} does not contain
-quantitative data, for example, but only subjective \emph{perception} of what is
-going on in the organisation).
-This domain is also voluntarily considered by the researchers as a domain on its
-own, separated from other fields.
-
-\subsection{Scalability}
-
-The \emph{scalability}, in the domain of medical informatics has two meanings.
-
-It can refer to the usual concept, found in other computer-related domains,
-refers to the notion that a system could have an acceptable behavior under a
-certain load, but as the load (the number of users using the product) increase,
-the speed becomes problematic.  This becomes particularly a problem, since
-delays, in emergency situation where all the staff is likely to interact with
-the system, could not be acceptable. This technical meaning will not be explored
-in this paper.
-
-Along with this first meaning, a system \emph{scales} well if the complexity doesn't
-explode when the system expands out of the pilot service where it is likely that
-it will be deployed first. According to \emph{UsersAward2}, the solution will be
-found by «~…\emph{model[-ing] the domain and its sub-domains more closely~}».
-Domain modeling, that is, modeling the business relation between actors, can be
-of use to find patterns on a huge system. By a careful systematic approach, one
-can more precisely understand how the organization works, and provide answers
-that take into consideration the characteristic of a group of users, in order to
-build a solution that fit this particular group of users.
-
-\section{Solutions area}
-
-\subsection{Development models encountered}
-
-The papers show two different types of development scheme, that both seem to
-work, in the context of the creation of an IT system for an hospital:
-\begin{itemize}
-\item Iterative development.
-\item Linear development.
-\end{itemize}
-
-The iterative development follows the \emph{agile} way of writing software:
-short, successive, iteration, without fear of throwing away ideas (or selecting only
-the ideas that are realistic, \cite{Hasvold2011}), lightweight
-process, maximum user implication. If the features implemented don't work, the
-method ensures that it is possible to pivot to a new solution using updated
-requirements (\emph{via} user insight, interviews, and other various feedbacks
-means). This method has been applied in the paper \cite{Hasvold2011}, where the
-team, after a first failure, changes its direction, and succeeds. This method
-can be summarized as the quote, from Eric S. Raymond, in \cite{Raymond97} :
-«~Release early, release often. And listen to you customers.~»
-
-The linear development implements the system from top to bottom, perhaps having
-a future user (the champion) in-house to maximise the chances of the acceptance
-of the solution. A lot of information is gathered beforehand, and acceptance
-testing is done in the latest part of the project. This type of workflow is easier to
-outsource, and is closer to the old
-\emph{waterfall}\footnote{\url{http://en.wikipedia.org/wiki/Waterfall\_model}} model.
-
-While the first method is dubbed more \emph{modern}, it demands more involvement
-by the staff, which is not easy to obtain, as seen before.
-
-\subsection{Functional mapping, users alignment}
-\label{mapping}
-
-\emph{Functional mapping} and \emph{user alignment} are two core concepts in the
-ERP (Enterprise Resource Planning) domain, and allow the reuse of solutions,
-based on \emph{best practices}\footnote{ISO has standardised plenty of
-behavioral practices for medical informatics:
-\url{http://www.iso.org/iso/iso_catalogue/catalogue_ics/catalogue_ics_browse.htm?ICS1=35&ICS2=240&ICS3=80&published=on&development=on&withdrawn=on}},
-which describes medical informatics system from the security point of view. When
-implementing such a standard, vendors can come up with ready-to-install
-solutions, which saves time and money. The functionalities of the software are
-mapped to the roles of the organisation.  After that part, functional gaps can
-subsist, hence the so-called \emph{users-alignment} phase, which fills this gap
-by changing the way the organisation works. If is is impossible to change the
-workflow of the organisation, for some reason, \emph{specific development} will
-have to be performed to bring the solution at its full potential.
-
-\subsection{Information gathering}
-
-All the papers relate the use participatory design. Even if it can seem to fail
-sometimes (for example in \cite{Hasvold2011}), it appears that it has been the
-solution. A quote from \cite{UsersAward2} is categorical, and is based on factual
-data:
-
-\begin{quote}
-«~[…] in the new report we conclude that, in order to increase levels of
-satisfaction, more participatory-design-for-innovation R\&D programmes have to be
-carried out focusing on how innovative local initiatives can be adapted,
-replicated and spread between caregivers in a way that conforms with regional
-and national policies.~»
-\end{quote}
-
-\section{Equality and diversity}
-
-The installation of a computer system in an hospital must take into account the
-likeliness of the heterogeneity of the users of the system. If a young medical
-secretary should be able to handle the change and a state-of-the-art
-information system, other people, especially when they are at the end of their
-careers, will have a hard time grasping the way the system works, and will
-reach a high efficiency only at the cost of a long training.
-
-In such systems, relying on the so-called \emph{snowball effect} can be an
-effective way to fill the gap between users of the system, and users that are
-not using it because of the lack of technical knowledge.
-
-In \cite{IndiaEMR}, which takes place in India, it is mentioned the fact
-that the staff hasn't got an access to computers at home, which limits their
-% imitates ??
-learning. The hospital takes the initiative of leveraging the knowledge of its
-IT staff to facilitate the initial setup and the maintenance of computers at
-home, for the medical staff to get familiar with the technology.
-
-In the same paper, another solution has been tried, with success. The GUI
-(Graphical User Interface) of the programs that were installed as part of the
-solution were designed to be \emph{as similar as possible} to the existing paper
-records that were used in this hospital.
-
-If the idea of having both the legacy paper-and-pen and the new computer-based
-system is feasible, it could be a great advantage, making the transition
-smoother (especially if the idea presented in the previous paragraph has been
-implemented). This has to be considered with care, since it is likely that it
-will bring a certain overhead: the data created using the old system will have
-to be transfered into the new one.
-
-A study, conducted both in 2004 and 2010 \cite{UsersAward2}, shows that the
-experience in ICT among the different kind of medical profession found in an
-hospital is getting more uniform. The overall bad result in this study is
-explained by the authors by the rise of the expectations among the professionals.
-
-%\section{Conclusions}
-%Despite facing numerous hard problem and being a relatively new field, the
-%medical informatics domain has been able to give itself analysis tools and
-%leverage the work done in other field, while being sure that it could be
-%applicable, by field studies and other research means. 
-
-\bibliographystyle{abstract}
-\bibliography{PaulADENOT-Report.bib}
+%\bibliographystyle{abstract}
+%\bibliography{PaulADENOT-Report.bib}
 
 \end{multicols}
 
