@@ -123,9 +123,18 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
 
   \part{Contexte}
   \section{Vue d'ensemble du sous-sytème media}
-  Cette partie de code de Gecko, commencée en 2009, est relativement complexe,
-  puisque complètement asynchrone. Ce choix technique est nécessaire, puisque
-  les différentes partie de la lecture d'un média (qu'il soit audio ou vidéo)
+  La plus grande partie du stage à été passé dans cette partie du code, que l'on
+  retrouve dans les dossiers \cc{content/media}, \cc{content/html/content/} et
+  \cc{media/} de \cc{mozilla-central}, le dépot dans lequel se trouve le code
+  source pour Firefox. En plus des fonctionnalités présentés dans la seconde
+  partie, bon nombre d'autre patches ont été écris, parce qu'il corrigeaient un
+  bug qui \og bloquait \fg un autre patch, ou encore pour ajouter des
+  fonctionnalités qui étaient d'un moins grand intérêt pour ce rapport.
+
+  L'arrivée de la lecture de media dans Gecko date de 2009, avec la sortie de
+  Firefox 3.5. Cette partie du code est est relativement complexe, puisque
+  complètement asynchrone. Ce choix technique est nécessaire, puisque les
+  différentes partie de la lecture d'un média (qu'il soit audio ou vidéo)
   peuvent provoquer des opérations bloquantes. Il est bien entendu inacceptable
   de bloquer le thread principal de l'application (qui rend l'interface
   graphique et gère les interactions utilisateurs) lorsque le décodeur WebM est
@@ -172,6 +181,13 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
   fourni la même API a l'utilisateur, que le fichier provienne du disque dur,
   d'un site internet, ou du cache disque. C'est là que se fait l'intégration
   avec la pile réseau du navigateur.
+
+  La classe \cc{nsMediaCache} gère un cache disque, de taille fixe, qui permet
+  de rejouer un média sans avoir besoin de faire appel au réseau. Le cache est
+  détruit lors de la fermeture de Firefox, et la clé pour chaque entrée est
+  l'URL du média.
+
+  \includegraphics[width=0.40\textwidth]{img/content-media.pdf}
 
   \part{Synthèse technique}
   \section{Proprieté \cc{playbackRate} des éléments \cc{<audio>} et \cc{<video>}}
@@ -260,13 +276,75 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
     }
   }
 
+  La majorité du code (parseur et résolveur de règle \cc{media}) est en fait
+  appelé directement depuis le code qui gère le CSS.
+
   \section{Détection de type MIME par reniflage}
-    \subsection{Risque de sécurité}
-    \subsection{Implémentation}
+    Les types MIME (Multipurpose Internet Mail Extensions), étaient à l'origine
+    est type spécifiant le type des contenu envoyés par email. De nos jours, ils
+    sont envoyés avec la réponse à une requête HTTP pour indiquer le type selon
+    lequel le navigateur devra interpréter la ressource. Par exemple, une page
+    HTML classique est de type \cc{text/html} et une feuille de style CSS
+    \cc{text/css}. Dans Gecko, et plus particulièrement dans le code des balises
+    media, ces types MIME sont utilisés pour savoir quel décodeur instancier, en
+    fonction du type du fichier. Gecko supporte les types suivants:
+
+    \begin{itemize}
+      \item \cc{audio/ogg}, \cc{video/ogg} pour les contenus audio et video
+        encapsulés dans un conteneur OGG contenant du Vorbis, Theora ou Opus.
+      \item \cc{audio/webm} ou \cc{video/webm} pour les contenus audio et video
+        encapsulés dans un conteneur WebM, contenant du VP8 et du Vorbis.
+      \item \cc{audio/wav} pour un fichier audio Wave, qui est en faite les
+        donnés audio non compressées.
+      \item \cc{video/mp4} pour un fichier dans un conteneur mp4, contenant du
+        H.264 et de l'AAC (uniquement si certaines option de compilation sont
+        activées, puisque ces codecs ne sont pas libres).
+    \end{itemize}
+
+    Si le type MIME n'est envoyé dans les en-têtes de la réponse à la requête
+    HTTP envoyée par le navigateur, ou s'il est erroné, le media ne pourra pas
+    être décodé correctement, et par conséquent ne pourra pas être lu par ne
+    navigateur. Certain très gros service d'hébergement de donnée (Amazon S3,
+    par exemple) n'envoyaient pas, pendant un temps, ce type MIME, rendant 
+    illisible les media provenant de ce fournisseur dans Firefox.
+
+    La solution, en plus de communiquer sur la nécessité d'envoyer un MIME type
+    correct avec une réponse HTTP, est de tenter de determiner le type du
+    fichier en regardant son contenu, après en avoir téléchargé le début. Cette
+    technique est appelée \emph{binary sniffing}.
+
+    Techniquement, il aura fallu créer un composant capable d'être appellé par
+    la couche réseau de Firefox (appelée \cc{necko}, et située dans le dossier
+    \cc{netwert} (sic)), et à qui est envoyé les 512 premier octets du fichier,
+    si le type MIME n'est pas connu.
+
+    On applique a ces 512 premier octets un traitement  (souvent à base de ET
+    binaire et de masque), pour déterminer son type. Ainsi, on obtient la table
+    suivante:
+
+    \begin{center}
+      \begin{tabular}{ l | c | r }%
+        Premiers octets & Masque                          & Type \\ \hline
+             \cc{OggS0} & \cc{0xffffffff}                 & Ogg  \\
+      \cc{RIFF0000WAVE} & \cc{0xffffffff00000000ffffffff} & Wave \\
+        \cc{0x1a45dfa3} & \cc{0xffffffff}                 & WebM \\
+            \cc{0xfffa} & \cc{0xfffb}                     & MP3  \\
+               \cc{ID3} & \cc{0xffffff}                   & MP3  \\
+      \end{tabular}
+    \end{center}
+
+    En masquant les $n$ premiers octets du fichier avec le masque et en les
+    comparant avec ceux spécifiés, il est donc possible de déterminer le type du
+    média, d'instancier le bon décodeur, et donc de pouvoir présenter le média à
+    l'utilisateur. Cette technique est spécifié dans un document du WhatWG
+    \cite{Sniff}. L'implémentation de Gecko prend en charge plus de type de
+    média que la spécification, qu'il faudra probablement mettre à jour pour
+    refléter les nouveaux type de fichier lisible dans les navigateurs.
+
   \section{Mise en cache du dessin des dégradés}
 
-  Lorsqu'un développeur web veut dessiner un dégradé, il doit le spécifier en
-  CSS en utilisant une syntaxe particulière:
+  Lorsqu'un développeur web veut dessiner un dégradé dans une page HTML, il doit
+  le spécifier en CSS en utilisant une syntaxe particulière:
 
     \noindent
   {\footnotesize
@@ -282,7 +360,7 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
   couleurs, et de la taille du dégradé lui même. Ce calcul (principalement des
   calculs d'interpolation) est re-effectué à chaque fois que le dégradé devra
   être affiché par le navigateur. Cependant, remarque assez rapidement que le
-  résultat de ce calcul pourrait être stocké et réutilisé: le dégradé d´un
+  résultat de ce calcul pourrait être stocké et réutilisé: le dégradé d'un
   onglet de Firefox ne devrait pas être recalculé tout le temps: il est le même
   pour tout la durée de vie de l'application. De même, les dégradés revenant
   souvent dans une page Web devraient être cachés.
@@ -351,10 +429,10 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
   Il approxime a 3\% près une flou gaussien, tout en permettant de travailler en
   deux passes verticales et horizontales.
 
-  L'implémentation de Gecko était trop lente: le défilement de pages
-  contenant beaucoup d'ombres était saccadé sur des machines même relativement
-  récentes. En extrayant l'algorithme de Gecko et en l'analysant a l'aide
-  d'outils de \emph{profiling} tels que \cc{valgrind} (simulateur de CPU x86),
+  L'implémentation de Gecko était trop lente: le défilement de pages contenant
+  beaucoup d'ombres était saccadé sur des machines même relativement récentes.
+  En extrayant l'algorithme de Gecko et en l'analysant a l'aide d'outils de
+  \emph{profiling} tels que \cc{valgrind} (simulateur de CPU x86),
   \cc{cachegrind} (analyseur permettant de déterminer le taux de défaut de
   cache) et \cc{gprof} pour un mesure de performance plus classique. Cela a
   permis de localiser les points faibles de l'algorithme, et d'en réécrire une
@@ -363,7 +441,8 @@ time-stretching, MIME type, media query, box blur, gradient, specification, web.
   méthode de mesure de performance basée sur des données quantitative a été mise
   en place, ce qui a permis de justifier certains choix pas forcements évidents,
   mais qui, du fait des optimisations que peuvent faire les processeur récent
-  x86 et ARM, résultaient en de meilleurs performances.
+  x86 et ARM (cache line prefetching, stride prediction, write-combining, prise
+  en compte du pipelining, etc.), résultaient en de meilleurs performances.
 
   D'autre optimisations seront possibles dans le future: utilisation de SSE et
   de NEON, jeu d'instruction vectoriels sur x86 et ARM, mise en cache des
