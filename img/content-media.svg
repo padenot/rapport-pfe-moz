@@ -9,14 +9,63 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="411.79102"
-   height="281"
+   width="457.64001"
+   height="333.5"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="content-media.svg">
   <defs
-     id="defs4" />
+     id="defs4">
+    <filter
+       inkscape:collect="always"
+       id="filter3833"
+       x="-0.10875"
+       width="1.2175"
+       y="-0.13384615"
+       height="1.2676923"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="7.25"
+         id="feGaussianBlur3835" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3861"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="4.85"
+         id="feGaussianBlur3863" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3883"
+       x="-0.088799998"
+       width="1.1776"
+       y="-0.185"
+       height="1.37"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="4.625"
+         id="feGaussianBlur3885" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3893"
+       x="-0.079999998"
+       width="1.16"
+       y="-0.23999999"
+       height="1.48"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.5"
+         id="feGaussianBlur3895" />
+    </filter>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,9 +73,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="52.46281"
-     inkscape:cy="84.478089"
+     inkscape:zoom="1.979899"
+     inkscape:cx="274.278"
+     inkscape:cy="178.30617"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -46,8 +95,8 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       originx="-179.5px"
-       originy="-709.5px" />
+       originx="-144px"
+       originy="-687.6px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -65,7 +114,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-179.5,-61.862183)">
+     transform="translate(-144,-31.262183)">
     <text
        xml:space="preserve"
        style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
@@ -77,6 +126,14 @@
          id="tspan2989"
          x="211.42857"
          y="78.790756" /></text>
+    <rect
+       style="fill:#6e70ff;fill-opacity:1;stroke:none;filter:url(#filter3883)"
+       id="rect3869"
+       width="150"
+       height="100"
+       x="75.5"
+       y="-19.5"
+       transform="translate(179.5,61.862183)" />
     <g
        id="g3840"
        style="stroke:#000000"
@@ -124,6 +181,26 @@
          style="fill:none;stroke:#000000" />
     </g>
     <g
+       id="g3845"
+       style="fill:#ff6d6c;fill-opacity:1;filter:url(#filter3861)">
+      <rect
+         transform="translate(179.5,61.862183)"
+         y="95.5"
+         x="80.5"
+         height="35"
+         width="330"
+         id="rect3841"
+         style="fill:#ff6d6c;fill-opacity:1;stroke:none" />
+      <rect
+         transform="translate(179.5,61.862183)"
+         y="120.5"
+         x="180.5"
+         height="160"
+         width="230"
+         id="rect3843"
+         style="fill:#ff6d6c;fill-opacity:1;stroke:none" />
+    </g>
+    <g
        id="g3855"
        transform="translate(8.8256836,4)"
        style="stroke:#000000">
@@ -146,6 +223,14 @@
          id="rect3817"
          style="fill:none;stroke:#000000" />
     </g>
+    <rect
+       style="fill:#8bff91;fill-opacity:1;stroke:none;filter:url(#filter3833)"
+       id="rect3047"
+       width="160"
+       height="155"
+       x="5.5"
+       y="130.5"
+       transform="translate(179.5,61.862183)" />
     <g
        id="g3913"
        transform="translate(-10.793457,6)"
@@ -215,6 +300,14 @@
          id="rect3823"
          style="fill:none;stroke:#000000" />
     </g>
+    <rect
+       style="fill:#008000;fill-opacity:1;stroke:none;filter:url(#filter3893)"
+       id="rect3887"
+       width="95"
+       height="45"
+       x="-29.5"
+       y="190.5"
+       transform="translate(179.5,61.862183)" />
     <g
        id="g3895"
        transform="translate(3.4375e-7,8)"
@@ -435,5 +528,54 @@
        id="path3974"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
+       x="190"
+       y="207.36218"
+       id="text3837"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3839"
+         x="190"
+         y="207.36218"
+         style="font-weight:bold">Audio Thread</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
+       x="470"
+       y="172.36218"
+       id="text3865"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3867"
+         x="470"
+         y="172.36218"
+         style="font-weight:bold">State Machine Thread</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
+       x="155"
+       y="262.36218"
+       id="text3897"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3899"
+         x="155"
+         y="262.36218"
+         style="font-weight:bold">Cubeb thread</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
+       x="85.35714"
+       y="-6.5"
+       id="text3901"
+       sodipodi:linespacing="125%"
+       transform="translate(179.5,61.862183)"><tspan
+         sodipodi:role="line"
+         id="tspan3903"
+         x="85.35714"
+         y="-6.5"
+         style="font-weight:bold;-inkscape-font-specification:Courier New Bold">Main Thread</tspan></text>
   </g>
 </svg>
