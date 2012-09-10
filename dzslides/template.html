@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<script src=bubbles.js>
+</script>
+<meta charset="utf-8">
+<title>Implémetation de fonctionnalités multimedia dans Firefox.</title>
+
+<!-- Your Slides -->
+<!-- One section is one slide -->
+<div id="header">
+    <a class="mozilla" href="http://www.mozilla.org/">visit <span>mozilla</span></a>
+</div>
+
+<section>
+    <!-- This is the first slide -->
+    <h1>Implémentation de nouvelles fonctionnalitées multimedia dans Firefox</h1>
+    <img class=center src="/logo-only.png" width=300px height=300px>
+    <footer>Paul Adenot, INSA de Lyon, PFE, 2012</footer>
+</section>
+
+<section>
+    <h3>Travailler chez Mozilla, c'est:</h3>
+    <ul class="small incremental">
+      <li> Envoyer du code chez 500 millions de personnes, toutes les 6
+      semaines ;
+      <li> Travailler avec des personnes, payées ou non, de toutes les
+      nationalités et cultures ;
+      <li> Travailler en toute transparence, sur des projets complètement
+      ouverts ;
+      <li> Travailler avec les plus grandes entreprises mondiales pour faire
+      évoluer les standards et la plateforme ;
+      <li> Créer, au quotidient, le <b>futur</b> du Web.
+    </ul>
+</section>
+
+<section>
+      <video controls id=manifesto src="http://videos-cdn.mozilla.net/brand/Mozilla_Firefox_Manifesto_v0.2_640.webm" poster="http://www.mozilla.org/images/about/poster.jpg"></video>
+</section>
+
+<section>
+<h3>Contexte: Le manifeste Mozilla</h3>
+<ul class="supersmall incremental">
+  <li>Internet fait partie intégrante de la vie moderne — il s'agit d'un composant clé dans
+  l'éducation, la communication, la collaboration, les affaires, le divertissement
+  et la société en général.</li>
+  <li>Internet est une ressource publique mondiale qui doit demeurer ouverte
+  et accessible.</li>
+  <li>Internet doit enrichir la vie de tout le
+  monde.</li>
+  <li>La sécurité des personnes sur Internet est fondamentale et ne peut pas être
+  considérée comme optionnelle.</li>
+  <li>Chacun doit avoir la possibilité de façonner son utilisation
+  d'Internet.</li>
+  <li>La réalité d'Internet en tant que ressource publique dépend de
+  l'interopérabilité (des protocoles, des formats de données, du contenu), de l'innovation
+  et d'une participation décentralisée mondiale.</li>
+  <li>Les logiciels libres et <i lang="en">open source</i> favorisent le développement
+  d'Internet comme ressource publique.</li>
+  <li>Des processus transparents et communautaires favorisent la participation,
+  la responsabilité et la confiance.</li>
+  <li>L'investissement commercial dans le développement d'Internet apporte de nombreux
+  bénéfices&nbsp;; un équilibre entre les objectifs commerciaux et l'intérêt public est
+  crucial.</li>
+  <li>L'amplification des aspects d'intérêt public d'Internet est un but
+  important, digne du temps, de l'attention et de l'investissement que l'on y consacre.</li>
+</ol>
+</section>
+
+<section>
+<h3> Contexte: Corporation? Foundation?</h3>
+ <ul>
+  <li> Mozilla Corporation n'est qu'une filliale de Mozilla Foundation.
+  <li> La majorité des employés sont employés de la MoCo.
+  <li> Bugdet d'environ $300M par an.
+  <li> 750 employés, des milliers de bénévoles.
+  <li> Firefox, mais pas que !
+ </ul>
+</section>
+
+<section>
+  <h3>Contexte: mon rôle au sein du projet Mozilla</h3>
+  <ul class=incremental>
+    <li> Titre officiel: <em>Platform development intern</em> ;
+    <li> C, C++, Javascript, sur toute la pile technologique qui fait Firefox ;
+    <li> Implémentation de fonctionnalités, selon des spécifications ;
+    <li> Équipe en Nouvelle-Zélande, seule personne à Mountain View ;
+    <li> Un tuteur sur site, un manager a San Francisco (1h20 de train, environ
+    une fois par semaine) ;
+  </ul>
+</section>
+
+<section>
+  <h3>Tout cela, avec beaucoup de gens, et tous à la fois</h3>
+  <ul class=incremental>
+    <li> Le projet ne s'arrête <strong>jamais</strong>
+    <li> Processus de travail relativement flexible, en évolution
+    <li> Jonglerie entre email, IRC, mailing lists, discussion de bureau, bug
+    tracker, etc.
+    <li> Profils très différent, relation avec des designer, traducteurs, autres
+    ingénieurs, etc.
+    <li> Communication <strong>omniprésente</strong>
+    <li> Parallelisation des tâches à outrance
+  <ul>
+</section>
+
+<section>
+<h3>Contexte: le navigateur internet de nos jours</h3>
+<ul class=incremental>
+  <li> Perte de vitesse des applications <em>natives</em> ;
+  <li> Applications web ≠ Site web.
+  <li> Besoin de hautes performances.
+  <li> Boot to Gecko: un OS basé sur les mêmes technologies.
+</ul>
+</section>
+
+<section>
+  <h3>Contexte industriel:</h3>
+  <ul>
+    <li> Google: Chrome (Webkit, V8)
+    <li> Apple: Safari (Webkit, Javascipt Core)
+    <li> Microsoft: Internet Explorer (Trident, Chakra)
+    <li> Opera Software: Opera (Presto, Carakan)
+    <li> Mozilla: Firefox (Gecko, Spidermonkey)
+  </ul>
+  <p>Course aux performances et au respect des standards.</p>
+  <p>Faire une implémentation de qualité, bien testée, qui respecte les
+  standards. Pas d'à peu près.</p>
+</section>
+
+
+<section>
+<h3>Un grand nombre de bug résolus pendant le stage!</h3>
+<iframe
+src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;emailtype1=exact;query_format=advanced;emailassigned_to1=1;bug_status=RESOLVED;email1=paul%40paul.cx;component=Build%20Config;component=Canvas%3A%202D;component=Canvas%3A%20WebGL;component=Disability%20Access%20APIs;component=Document%20Navigation;component=DOM;component=DOM%3A%20Apps;component=DOM%3A%20Core%20%26%20HTML;component=DOM%3A%20CSS%20Object%20Model;component=DOM%3A%20Device%20Interfaces;component=DOM%3A%20Events;component=DOM%3A%20IndexedDB;component=DOM%3A%20Mozilla%20Extensions;component=DOM%3A%20Other;component=DOM%3A%20Traversal-Range;component=DOM%3A%20Validation;component=DOM%3A%20Workers;component=Drag%20and%20Drop;component=Editor;component=Embedding%3A%20APIs;component=Embedding%3A%20GRE%20Core;component=Embedding%3A%20Mac;component=Embedding%3A%20MFC%20Embed;component=Embedding%3A%20Packaging;component=Event%20Handling;component=File%20Handling;component=Find%20Backend;component=Gecko%20Profiler;component=General;component=Geolocation;component=GFX%3A%20Color%20Management;component=Graphics;component=Graphics%3A%20Layers;component=Graphics%3A%20Text;component=Hardware%20Abstraction%20Layer%20%28HAL%29;component=History%3A%20Global;component=HTML%3A%20Form%20Submission;component=HTML%3A%20Parser;component=Identity;component=Image%20Blocking;component=ImageLib;component=Installer%3A%20XPInstall%20Engine;component=Internationalization;component=IPC;component=Java%20to%20XPCOM%20Bridge;component=JavaScript%20Engine;component=jemalloc;component=js-ctypes;component=Keyboard%3A%20Navigation;component=Layout;component=Layout%3A%20Block%20and%20Inline;component=Layout%3A%20Floats;component=Layout%3A%20Form%20Controls;component=Layout%3A%20HTML%20Frames;component=Layout%3A%20Images;component=Layout%3A%20Misc%20Code;component=Layout%3A%20R%20%26%20A%20Pos;component=Layout%3A%20Tables;component=Layout%3A%20Text;component=Layout%3A%20View%20Rendering;component=Localization;component=MathML;component=MFBT;component=mozglue;component=Nanojit;component=Networking;component=Networking%3A%20Cache;component=Networking%3A%20Cookies;component=Networking%3A%20DNS;component=Networking%3A%20Domain%20Lists;component=Networking%3A%20File;component=Networking%3A%20FTP;component=Networking%3A%20HTTP;component=Networking%3A%20JAR;component=Networking%3A%20WebSockets;component=Plug-ins;component=Preferences%3A%20Backend;component=Print%20Preview;component=Printing%3A%20Output;component=Printing%3A%20Setup;component=Profile%3A%20BackEnd;component=Profile%3A%20Migration;component=Profile%3A%20Roaming;component=QuickLaunch%20%28AKA%20turbo%20mode%29;component=RDF;component=Rewriting%20and%20Analysis;component=Security;component=Security%3A%20CAPS;component=Security%3A%20PSM;component=Security%3A%20S%2FMIME;component=Security%3A%20UI;component=Selection;component=Serializers;component=Spelling%20checker;component=SQL;component=String;component=Style%20System%20%28CSS%29;component=SVG;component=Tracking;component=Video%2FAudio;component=Web%20Services;component=WebDAV;component=WebRTC;component=WebRTC%3A%20Audio%2FVideo;component=WebRTC%3A%20Networking;component=WebRTC%3A%20Signaling;component=Widget;component=Widget%3A%20Android;component=Widget%3A%20BeOS;component=Widget%3A%20Cocoa;component=Widget%3A%20Gonk;component=Widget%3A%20Gtk;component=Widget%3A%20OS%2F2;component=Widget%3A%20Photon;component=Widget%3A%20Qt;component=Widget%3A%20Win32;component=X-remote;component=XBL;component=XForms;component=XML;component=XP%20Toolkit%2FWidgets%3A%20Menus;component=XP%20Toolkit%2FWidgets%3A%20XUL;component=XPCOM;component=XPConnect;component=XSLT;component=XTF;component=XUL;product=Core">
+</iframe>
+</section>
+
+<section>
+  <h3>$ cd content/media</h3>
+  <ul class=incremental>
+    <li> Beaucoup de threads
+    <li> Beaucoup de code
+    <li> Beaucoup de cas d'usage
+    <li> Beaucoup de cas particuliers
+    <li> Spécification relativement complexe
+  <ul>
+</section>
+
+<section>
+  <h3>&lt;audio&gt;, &lt;video&gt</h3>
+  <video controls src=http://mirror.cessen.com/blender.org/peach/trailer/trailer_400p.ogg width=200>
+</section>
+
+<section>
+  <h3>&lt;audio&gt;, &lt;video&gt</h3>
+  <video class=rotate controls
+  src=http://mirror.cessen.com/blender.org/peach/trailer/trailer_400p.ogg
+  width=200> </video>
+  <p>Des contraintes un peu plus grandes qu'un lecteur traditionel :-)</p>
+</section>
+
+<section>
+<h3> Possibilités assez grandes</h3>
+<ul>
+  <li> Lecture normale
+  <li> Modification de la vitesse de lecture
+  <li> Source temps réel (webtv, webcam)
+  <li> Modification du flux en temps réel
+  <li> Communication peer to peer
+  <li> Génération de vidéo/audio en temps réel
+</ul>
+</section>
+
+<section>
+<h3> Fonctionnalités implémentés </h3>
+  <ul>
+    <li> Playback rate
+    <li> &lt;video media="min-width(500px)"&gt;
+    <li> Binary sniffing
+    <li> Gradient caching
+    <li> Box blur
+  </ul>
+</section>
+
+<!-- Your Style -->
+<!-- Define the style of your presentation -->
+
+<!-- Maybe a font from http://www.google.com/webfonts ? -->
+<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+
+<style>
+  html, .view body { background-color: black; counter-reset: slideidx; }
+  body, .view section { background-color: white; border-radius: 12px }
+  /* A section is a slide. It's size is 800x600, and this will never change */
+  section, .view head > title {
+      /* The font from Google */
+      font-family: 'Oswald', arial, serif;
+      font-size: 30px;
+  }
+
+  .rotate {
+    height: 50%;
+      box-shadow: 0px 0px 30px black;
+      border-radius: 30px;
+      -moz-transition: all 3s ease-in;
+      transform-style: preserve-3d;
+      -moz-perspective: 800px;
+      -moz-perspective-origin: 50% 50%;
+  }
+
+  .rotate:hover {
+    -moz-transition: all 3s ease-in;
+     -moz-transform: rotateY(-1800deg) rotateX(180deg);
+  }
+
+  .subtitles {
+    text-align:center;
+    color: white;
+    position: absolute;
+    bottom: 33px;
+    left: 30px;
+  }
+
+  .bubblesContainer {
+    background: black;
+    height: 100%;
+    z-index: 4;
+  }
+
+  a.mozilla {
+    position: relative;
+    float: right;
+    display: block;
+    height: 49px;
+    width: 118px;
+    background: url(mozilla-tab.png) 100% 0 no-repeat;
+    text-indent: -200px;
+    overflow: hidden;
+    margin-right: 20px;
+  }
+
+  .small {
+    margin: 2em 2em;
+    font-size: normal;
+  }
+
+  .supersmall {
+    margin: 2em 2em;
+    font-size: 18px;
+  }
+
+
+  .view section:after {
+    counter-increment: slideidx;
+    content: counter(slideidx, decimal-leading-zero);
+    position: absolute; bottom: -80px; right: 100px;
+    color: white;
+  }
+
+  section:before {
+    /* Enable the slides numbering by uncommenting below */
+    /* visibility: visible; */
+    /* content: counter(slideidx); */
+  }
+
+  .view head > title {
+    color: white;
+    text-align: center;
+    margin: 1em 0 1em 0;
+  }
+
+  .center {
+    display: block;
+    margin: 0px auto;
+  }
+
+  h1, h2 {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 40px;
+  }
+  h3 {
+    margin: 0em 1em;
+  }
+
+  ul {
+      margin: 2em 2em;
+  }
+
+  p {
+    margin: 35px 45px;
+    font-size: 30px;
+  }
+
+  blockquote {
+    height: 100%;
+    background-color: black;
+    color: white;
+    font-size: 60px;
+    padding: 50px;
+  }
+  blockquote:before {
+    content: open-quote;
+  }
+  blockquote:after {
+    content: close-quote;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 40px;
+    text-align: right;
+    background-color: #F3F4F8;
+    border-top: 1px solid #CCC;
+  }
+
+  /* Transition effect */
+  /* Feel free to change the transition effect for original
+     animations. See here:
+     https://developer.mozilla.org/en/CSS/CSS_transitions
+     How to use CSS3 Transitions: */
+  section {
+    -moz-transition: left 400ms linear 0s;
+    -webkit-transition: left 400ms linear 0s;
+    -ms-transition: left 400ms linear 0s;
+    transition: left 400ms linear 0s;
+  }
+  .view section {
+    -moz-transition: none;
+    -webkit-transition: none;
+    -ms-transition: none;
+    transition: none;
+  }
+
+  .view section[aria-selected] {
+    border: 5px red solid;
+  }
+
+  /* Before */
+  section { left: -150%; }
+  /* Now */
+  section[aria-selected] { left: 0; }
+  /* After */
+  section[aria-selected] ~ section { left: +150%; }
+
+  /* Incremental elements */
+
+  /* By default, visible */
+  .incremental > * { opacity: 1; }
+
+  /* The current item */
+  .incremental > *[aria-selected] { opacity: 1; }
+
+  /* The items to-be-selected */
+  .incremental > *[aria-selected] ~ * { opacity: 0; }
+
+  /* The progressbar, at the bottom of the slides, show the global
+     progress of the presentation. */
+  #progress-bar {
+    height: 2px;
+    background: #AAA;
+  }
+  iframe {
+    width: 100%;
+    height: 80%;
+  }
+</style>
+
+<!-- {{{{ dzslides core
+#
+#
+#     __  __  __       .  __   ___  __
+#    |  \  / /__` |    | |  \ |__  /__`
+#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
+#
+#
+# The following block of code is not supposed to be edited.
+# But if you want to change the behavior of these slides,
+# feel free to hack it!
+#
+-->
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<style>
+  * { margin: 0; padding: 0; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+  details { display: none; }
+  body {
+    width: 800px; height: 600px;
+    margin-left: -400px; margin-top: -300px;
+    position: absolute; top: 50%; left: 50%;
+    overflow: hidden;
+    display: none;
+  }
+  .view body {
+    position: static;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    display: inline-block;
+    overflow: visible; overflow-x: hidden;
+    /* undo Dz.onresize */
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;
+  }
+  .view head, .view head > title { display: block }
+  section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  .view section {
+    pointer-events: auto;
+    position: static;
+    width: 800px; height: 600px;
+    margin: -150px -200px;
+    float: left;
+
+    transform: scale(.4);
+    -moz-transform: scale(.4);
+    -webkit-transform: scale(.4);
+    -o-transform: scale(.4);
+    -ms-transform: scale(.4);
+  }
+  .view section > * { pointer-events: none; }
+  section[aria-selected] { pointer-events: auto; }
+  html { overflow: hidden; }
+  html.view { overflow: visible; }
+  body.loaded { display: block; }
+  .incremental {visibility: hidden; }
+  .incremental[active] {visibility: visible; }
+  #progress-bar{
+    bottom: 0;
+    position: absolute;
+    -moz-transition: width 400ms linear 0s;
+    -webkit-transition: width 400ms linear 0s;
+    -ms-transition: width 400ms linear 0s;
+    transition: width 400ms linear 0s;
+  }
+  .view #progress-bar {
+    display: none;
+  }
+  xfigure {
+    width: 100%;
+    height: 100%;
+  }
+  figure > * {
+    position: absolute;
+  }
+  video {
+    width: 100%; height: 100%;
+  }
+
+  section:before {
+    counter-increment: slideidx;
+    background: rgba(255, 255, 255, .7);
+    bottom: 5px;
+    position: absolute;
+    border-radius: 5px;
+    font-weight: bold;
+    left: 15px;
+    font-size: 25px;
+    padding: 2px 10px;
+  }
+</style>
+
+<script>
+  var Dz = {
+    remoteWindows: [],
+    idx: -1,
+    step: 0,
+    html: null,
+    slides: null,
+    progressBar : null,
+    params: {
+      autoplay: "1"
+    }
+  };
+
+  Dz.init = function() {
+    document.body.className = "loaded";
+    this.slides = Array.prototype.slice.call($$("body > section"));
+    this.progressBar = $("#progress-bar");
+    this.html = document.body.parentNode;
+    this.setupParams();
+    this.onhashchange();
+    this.setupTouchEvents();
+    this.onresize();
+    this.setupView();
+    vid = new Bubbles.video("manifesto")
+    vid.subtitles( false, {
+    "French" : {
+      language  : "French",
+      file    : "french.srt"
+    }
+  }
+);
+
+  }
+
+  Dz.setupParams = function() {
+    var p = window.location.search.substr(1).split('&');
+    p.forEach(function(e, i, a) {
+      var keyVal = e.split('=');
+      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+    });
+  // Specific params handling
+    if (!+this.params.autoplay)
+      $$.forEach($$("video"), function(v){ v.controls = true });
+  }
+
+  Dz.onkeydown = function(aEvent) {
+    // Don't intercept keyboard shortcuts
+    if (aEvent.altKey
+      || aEvent.ctrlKey
+      || aEvent.metaKey
+      || aEvent.shiftKey) {
+      return;
+    }
+    if ( aEvent.keyCode == 37 // left arrow
+      || aEvent.keyCode == 38 // up arrow
+      || aEvent.keyCode == 33 // page up
+    ) {
+      aEvent.preventDefault();
+      this.back();
+    }
+    if ( aEvent.keyCode == 39 // right arrow
+      || aEvent.keyCode == 40 // down arrow
+      || aEvent.keyCode == 34 // page down
+    ) {
+      aEvent.preventDefault();
+      this.forward();
+    }
+    if (aEvent.keyCode == 35) { // end
+      aEvent.preventDefault();
+      this.goEnd();
+    }
+    if (aEvent.keyCode == 36) { // home
+      aEvent.preventDefault();
+      this.goStart();
+    }
+    if (aEvent.keyCode == 32) { // space
+      aEvent.preventDefault();
+      this.toggleContent();
+    }
+    if (aEvent.keyCode == 70) { // f
+      aEvent.preventDefault();
+      this.goFullscreen();
+    }
+    if (aEvent.keyCode == 79) { // o
+      aEvent.preventDefault();
+      this.toggleView();
+    }
+  }
+
+  /* Touch Events */
+
+  Dz.setupTouchEvents = function() {
+    var orgX, newX;
+    var tracking = false;
+
+    var db = document.body;
+    db.addEventListener("touchstart", start.bind(this), false);
+    db.addEventListener("touchmove", move.bind(this), false);
+
+    function start(aEvent) {
+      aEvent.preventDefault();
+      tracking = true;
+      orgX = aEvent.changedTouches[0].pageX;
+    }
+
+    function move(aEvent) {
+      if (!tracking) return;
+      newX = aEvent.changedTouches[0].pageX;
+      if (orgX - newX > 100) {
+        tracking = false;
+        this.forward();
+      } else {
+        if (orgX - newX < -100) {
+          tracking = false;
+          this.back();
+        }
+      }
+    }
+  }
+
+  Dz.setupView = function() {
+    document.body.addEventListener("click", function ( e ) {
+      if (!Dz.html.classList.contains("view")) return;
+      if (!e.target || e.target.nodeName != "SECTION") return;
+
+      Dz.html.classList.remove("view");
+      Dz.setCursor(Dz.slides.indexOf(e.target) + 1);
+    }, false);
+  }
+
+  /* Adapt the size of the slides to the window */
+
+  Dz.onresize = function() {
+    var db = document.body;
+    var sx = db.clientWidth / window.innerWidth;
+    var sy = db.clientHeight / window.innerHeight;
+    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
+
+    db.style.MozTransform = transform;
+    db.style.WebkitTransform = transform;
+    db.style.OTransform = transform;
+    db.style.msTransform = transform;
+    db.style.transform = transform;
+  }
+
+
+  Dz.getDetails = function(aIdx) {
+    var s = $("section:nth-of-type(" + aIdx + ")");
+    var d = s.$("details");
+    return d ? d.innerHTML : "";
+  }
+
+  Dz.onmessage = function(aEvent) {
+    var argv = aEvent.data.split(" "), argc = argv.length;
+    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
+    var win = aEvent.source;
+    if (argv[0] === "REGISTER" && argc === 1) {
+      this.remoteWindows.push(win);
+      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+      return;
+    }
+    if (argv[0] === "BACK" && argc === 1)
+      this.back();
+    if (argv[0] === "FORWARD" && argc === 1)
+      this.forward();
+    if (argv[0] === "START" && argc === 1)
+      this.goStart();
+    if (argv[0] === "END" && argc === 1)
+      this.goEnd();
+    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
+      this.toggleContent();
+    if (argv[0] === "SET_CURSOR" && argc === 2)
+      window.location.hash = "#" + argv[1];
+    if (argv[0] === "GET_CURSOR" && argc === 1)
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+    if (argv[0] === "GET_NOTES" && argc === 1)
+      this.postMsg(win, "NOTES", this.getDetails(this.idx));
+  }
+
+  Dz.toggleContent = function() {
+    // If a Video is present in this new slide, play it.
+    // If a Video is present in the previous slide, stop it.
+    var s = $("section[aria-selected]");
+    if (s) {
+      var video = s.$("video");
+      if (video) {
+        if (video.ended || video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    }
+  }
+
+  Dz.setCursor = function(aIdx, aStep) {
+    // If the user change the slide number in the URL bar, jump
+    // to this slide.
+    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
+    window.location.hash = "#" + aIdx + aStep;
+  }
+
+  Dz.onhashchange = function() {
+    var cursor = window.location.hash.split("#"),
+        newidx = 1,
+        newstep = 0;
+    if (cursor.length == 2) {
+      newidx = ~~cursor[1].split(".")[0];
+      newstep = ~~cursor[1].split(".")[1];
+      if (newstep > Dz.slides[newidx - 1].$$('.incremental > *').length) {
+        newstep = 0;
+        newidx++;
+      }
+    }
+    this.setProgress(newidx, newstep);
+    if (newidx != this.idx) {
+      this.setSlide(newidx);
+    }
+    if (newstep != this.step) {
+      this.setIncremental(newstep);
+    }
+    for (var i = 0; i < this.remoteWindows.length; i++) {
+      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
+    }
+  }
+
+  Dz.back = function() {
+    if (this.idx == 1 && this.step == 0) {
+      return;
+    }
+    if (this.step == 0) {
+      this.setCursor(this.idx - 1,
+                     this.slides[this.idx - 2].$$('.incremental > *').length);
+    } else {
+      this.setCursor(this.idx, this.step - 1);
+    }
+  }
+
+  Dz.forward = function() {
+    if (this.idx >= this.slides.length &&
+        this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+        return;
+    }
+    if (this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+      this.setCursor(this.idx + 1, 0);
+    } else {
+      this.setCursor(this.idx, this.step + 1);
+    }
+  }
+
+  Dz.goStart = function() {
+    this.setCursor(1, 0);
+  }
+
+  Dz.goEnd = function() {
+    var lastIdx = this.slides.length;
+    var lastStep = this.slides[lastIdx - 1].$$('.incremental > *').length;
+    this.setCursor(lastIdx, lastStep);
+  }
+
+  Dz.toggleView = function() {
+    this.html.classList.toggle("view");
+
+    if (this.html.classList.contains("view")) {
+      $("section[aria-selected]").scrollIntoView(true);
+    }
+  }
+
+  Dz.setSlide = function(aIdx) {
+    this.idx = aIdx;
+    var old = $("section[aria-selected]");
+    var next = $("section:nth-of-type("+ this.idx +")");
+    if (old) {
+      old.removeAttribute("aria-selected");
+      var video = old.$("video");
+      if (video) {
+        video.pause();
+      }
+    }
+    if (next) {
+      next.setAttribute("aria-selected", "true");
+      var video = next.$("video");
+      if (video && !!+this.params.autoplay) {
+        video.play();
+      }
+    } else {
+      // That should not happen
+      this.idx = -1;
+      // console.warn("Slide doesn't exist.");
+    }
+  }
+
+  Dz.setIncremental = function(aStep) {
+    this.step = aStep;
+    var old = this.slides[this.idx - 1].$('.incremental > *[aria-selected]');
+    if (old) {
+      old.removeAttribute('aria-selected');
+    }
+    var incrementals = $$('.incremental');
+    if (this.step <= 0) {
+      $$.forEach(incrementals, function(aNode) {
+        aNode.removeAttribute('active');
+      });
+      return;
+    }
+    var next = this.slides[this.idx - 1].$$('.incremental > *')[this.step - 1];
+    if (next) {
+      next.setAttribute('aria-selected', true);
+      next.parentNode.setAttribute('active', true);
+      var found = false;
+      $$.forEach(incrementals, function(aNode) {
+        if (aNode != next.parentNode)
+          if (found)
+            aNode.removeAttribute('active');
+          else
+            aNode.setAttribute('active', true);
+        else
+          found = true;
+      });
+    } else {
+      setCursor(this.idx, 0);
+    }
+    return next;
+  }
+
+  Dz.goFullscreen = function() {
+    var html = $('html'),
+        requestFullscreen = html.requestFullscreen || html.requestFullScreen || html.mozRequestFullScreen || html.webkitRequestFullScreen;
+    if (requestFullscreen) {
+      requestFullscreen.apply(html);
+    }
+  }
+  
+  Dz.setProgress = function(aIdx, aStep) {
+    var slide = $("section:nth-of-type("+ aIdx +")");
+    if (!slide)
+      return;
+    var steps = slide.$$('.incremental > *').length + 1,
+        slideSize = 100 / (this.slides.length - 1),
+        stepSize = slideSize / steps;
+    this.progressBar.style.width = ((aIdx - 1) * slideSize + aStep * stepSize) + '%';
+  }
+  
+  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
+    aMsg = [aMsg];
+    for (var i = 2; i < arguments.length; i++)
+      aMsg.push(encodeURIComponent(arguments[i]));
+    aWin.postMessage(aMsg.join(" "), "*");
+  }
+  
+  function init() {
+    Dz.init();
+    window.onkeydown = Dz.onkeydown.bind(Dz);
+    window.onresize = Dz.onresize.bind(Dz);
+    window.onhashchange = Dz.onhashchange.bind(Dz);
+    window.onmessage = Dz.onmessage.bind(Dz);
+  }
+
+  window.onload = init;
+</script>
+
+
+<script> // Helpers
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+
+      // closest thing possible to the ECMAScript 5 internal IsCallable
+      // function 
+      if (typeof this !== "function")
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be fBound is not callable"
+      );
+
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function () {},
+          fBound = function () {
+            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
+                   aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
+    };
+  }
+
+  var $ = (HTMLElement.prototype.$ = function(aQuery) {
+    return this.querySelector(aQuery);
+  }).bind(document);
+
+  var $$ = (HTMLElement.prototype.$$ = function(aQuery) {
+    return this.querySelectorAll(aQuery);
+  }).bind(document);
+
+  $$.forEach = function(nodeList, fun) {
+    Array.prototype.forEach.call(nodeList, fun);
+  }
+
+</script>
+<!-- vim: set fdm=marker: }}} -->
