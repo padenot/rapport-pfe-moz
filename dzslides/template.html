@@ -2,17 +2,13 @@
 <script src=bubbles.js>
 </script>
 <meta charset="utf-8">
-<title>Implémetation de fonctionnalités multimedia dans Firefox.</title>
+<title>Implémetation de fonctionnalités dans Firefox.</title>
 
 <!-- Your Slides -->
 <!-- One section is one slide -->
-<div id="header">
-    <a class="mozilla" href="http://www.mozilla.org/">visit <span>mozilla</span></a>
-</div>
-
 <section>
     <!-- This is the first slide -->
-    <h1>Implémentation de nouvelles fonctionnalitées multimedia dans Firefox</h1>
+    <h1>Implémentation de nouvelles fonctionnalitées dans Firefox</h1>
     <img class=center src="/logo-only.png" width=300px height=300px>
     <footer>Paul Adenot, INSA de Lyon, PFE, 2012</footer>
 </section>
@@ -27,8 +23,9 @@
       <li> Travailler en toute transparence, sur des projets complètement
       ouverts ;
       <li> Travailler avec les plus grandes entreprises mondiales pour faire
-      évoluer les standards et la plateforme ;
-      <li> Créer, au quotidient, le <b>futur</b> du Web.
+      évoluer les standards et la plateforme Web ;
+      <li> Résoudre des défis techniques à la pointe de l'industrie ;
+      <li> Créer, au quotidien, le <b>futur</b> du Web.
     </ul>
 </section>
 
@@ -67,12 +64,20 @@
 
 <section>
 <h3> Contexte: Corporation? Foundation?</h3>
- <ul>
-  <li> Mozilla Corporation n'est qu'une filliale de Mozilla Foundation.
+ <ul class=incremental>
+  <li> Mozilla Corporation n'est qu'une filiale de Mozilla Foundation.
   <li> La majorité des employés sont employés de la MoCo.
   <li> Bugdet d'environ $300M par an.
   <li> 750 employés, des milliers de bénévoles.
   <li> Firefox, mais pas que !
+  <ul class=incremental>
+    <li> Thunderbird (gendarmerie nationale) ;
+    <li> Hackasaurus ;
+    <li> Firefox Mobile ;
+    <li> Firefox OS (Boot to Gecko) ;
+    <li> Nombreux services, sites web ;
+    <li> Marketing, RH, RP, Management, etc.
+  </ul>
  </ul>
 </section>
 
@@ -85,35 +90,39 @@
     <li> Équipe en Nouvelle-Zélande, seule personne à Mountain View ;
     <li> Un tuteur sur site, un manager a San Francisco (1h20 de train, environ
     une fois par semaine) ;
+    <li> 80% du temps sur media, 20% sur layout/gfx (vers la fin du stage).
   </ul>
 </section>
 
 <section>
   <h3>Tout cela, avec beaucoup de gens, et tous à la fois</h3>
   <ul class=incremental>
-    <li> Le projet ne s'arrête <strong>jamais</strong>
-    <li> Processus de travail relativement flexible, en évolution
+    <li> Le projet ne s'arrête <strong>jamais</strong> ;
+    <li> Processus de travail relativement flexible, en évolution ;
     <li> Jonglerie entre email, IRC, mailing lists, discussion de bureau, bug
-    tracker, etc.
-    <li> Profils très différent, relation avec des designer, traducteurs, autres
-    ingénieurs, etc.
-    <li> Communication <strong>omniprésente</strong>
-    <li> Parallelisation des tâches à outrance
+    tracker, etc. ;
+    <li> Parallélisation des tâches à outrance ;
+    <li> Profils très différent, relation avec des designers, traducteurs, autres
+    ingénieurs, etc. ;
+    <li> Communication <strong>omniprésente</strong>.
   <ul>
 </section>
 
 <section>
 <h3>Contexte: le navigateur internet de nos jours</h3>
 <ul class=incremental>
-  <li> Perte de vitesse des applications <em>natives</em> ;
-  <li> Applications web ≠ Site web.
-  <li> Besoin de hautes performances.
-  <li> Boot to Gecko: un OS basé sur les mêmes technologies.
+  <li> Probablement le logiciel que les gens utilisent le plus ;
+  <li> Perte de vitesse des applications dites <em>natives</em> ;
+  <li> Applications web ≠ Site web ;
+  <li> Besoin de hautes performances ;
+  <li> Nécessité d'être sûr pour l'utilisateur ;
+  <li> Firefox OS (Boot to Gecko): un OS pour téléphone basé sur les mêmes technologies.
 </ul>
 </section>
 
 <section>
   <h3>Contexte industriel:</h3>
+  <p> Cinq acteur majeur dans le marché des navigateurs:</p>
   <ul>
     <li> Google: Chrome (Webkit, V8)
     <li> Apple: Safari (Webkit, Javascipt Core)
@@ -135,15 +144,26 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
 </section>
 
 <section>
+<h1> Un peu de technique </h1>
+  <h1><code>$ cd content/media</code></h1>
+</section>
+
+<section>
   <h3>$ cd content/media</h3>
   <ul class=incremental>
-    <li> Beaucoup de threads
-    <li> Beaucoup de code
-    <li> Beaucoup de cas d'usage
-    <li> Beaucoup de cas particuliers
-    <li> Spécification relativement complexe
+    <li> 100% asynchrone ;
+    <li> Beaucoup de threads ;
+    <li> Beaucoup de code ;
+    <li> Beaucoup de cas d'usage ;
+    <li> Beaucoup de cas particuliers ;
+    <li> Spécification relativement complexe, en perpétuelle évolution.
   <ul>
 </section>
+
+<!--<section>-->
+<!--<h3> Vue a 10000 pieds du rendu dans Gecko </h3>-->
+<!--<img style="display: block; margin: 0 auto;" src="Gecko_Overview.png">-->
+<!--</section>-->
 
 <section>
   <h3>&lt;audio&gt;, &lt;video&gt</h3>
@@ -152,62 +172,523 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
 
 <section>
   <h3>&lt;audio&gt;, &lt;video&gt</h3>
-  <video class=rotate controls
+  <video class=rotate
   src=http://mirror.cessen.com/blender.org/peach/trailer/trailer_400p.ogg
   width=200> </video>
-  <p>Des contraintes un peu plus grandes qu'un lecteur traditionel :-)</p>
+  <p>Des contraintes un peu plus importantes qu'un lecteur traditionnel :-)
+  <button onclick="rotate()"> Click ! </button>
+  </p>
 </section>
 
 <section>
 <h3> Possibilités assez grandes</h3>
-<ul>
-  <li> Lecture normale
-  <li> Modification de la vitesse de lecture
-  <li> Source temps réel (webtv, webcam)
-  <li> Modification du flux en temps réel
-  <li> Communication peer to peer
-  <li> Génération de vidéo/audio en temps réel
+<ul class=incremental>
+  <li> Lecture normale d'un flux réseau ;
+  <li> Modification de la vitesse de lecture ;
+  <li> Source temps réel (webtv, webcam) ;
+  <li> Modification du flux en temps réel ;
+  <li> Communication peer to peer ;
+  <li> Génération d'audio en temps réel ;
+  <li> Augmentation de la complexité du code.
 </ul>
 </section>
 
 <section>
-<h3> Fonctionnalités implémentés </h3>
+<h3> (Quelques) fonctionnalités implémentés </h3>
   <ul>
     <li> Playback rate
-    <li> &lt;video media="min-width(500px)"&gt;
-    <li> Binary sniffing
-    <li> Gradient caching
-    <li> Box blur
+    <li> Mise en cache des dégradés
+    <li> Optimisation du box blur
   </ul>
+</section>
+
+<section>
+  <h3>Playback rate</h3>
+    <ul>
+      <li> Changement de la vitesse de lecture: <code>playbackRate</code>
+      <li> Activation de la compensation de hauteur:
+      <code>mozPreservesPitch</code> (en cours de standardisation, d'où le
+      préfixe)
+      <li> Changement dynamique de vitesse
+      <li> Fonctionne sur toutes les plateformes, tous les codecs
+    </ul>
+</section>
+
+<section>
+<h3>Principales difficultés</h3>
+<ul class=incremental>
+  <li> Backend audio différent sur chaque plateforme
+  <li> Comment écrire les tests?
+  <li> Compensation de latence pour le changement dynamique de vitesse
+  <li> Touche un bon nombre de fichier de <code>content/media</code>
+  <li> Problème de licences
+  <li> Environ deux mois de travail (à 75%)
+</section>
+
+<section>
+<h1> Mise en cache de dégradés </h1>
+<h1> <code>$ cd mozilla-central/layout/base</code> </h1>
+</section>
+
+<section>
+<h3>De la mise en cache pour les dégradés</h3>
+<div class=centergradient>
+  <div class=gradient1>
+  </div>
+  <div class=gradient2>
+  </div>
+  <div class=gradient3>
+  </div>
+  <div class=gradient4>
+  </div>
+</div>
+
+<small style="font-size:0.55em">
+  <pre style="margin-left:0px;">
+    linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,
+                    #7db9e8 100%);
+    radial-gradient(ellipse at center, #f0b7a1 0%,#8c3310 50%,
+                    #752201 51%,#bf6e4e 100%);
+    linear-gradient(135deg, #a90329 0%,#8f0222 44%,#6d0019 100%);
+    linear-gradient(to right, rgba(30,87,153,0) 0%,rgba(30,87,153,0.8)
+                    15%,rgba(30,87,153,1) 19%,rgba(30,87,153,1)
+                    20%,rgba(41,137,216,1) 50%,rgba(30,87,153,1)
+                    80%,rgba(30,87,153,1) 81%,rgba(30,87,153,0.8)
+                    85%,rgba(30,87,153,0) 100%);
+  </pre>
+  </small>
+</section>
+
+<section>
+<h3>De la mise en cache pour les dégradés (1)</h3>
+<p>
+  Avant, pour chaque dégradé:
+</p>
+<ul class=incremental>
+  <li> <code>stylesheet.css</code> (au chargement)
+  <li> Tokenizer, Parser (au chargement)
+  <li> Calcul du dégradé (chaque fois)
+  <li> Rendu du dégradé (chaque fois)
+  <li> Composition des différentes <em>layers</em> (chaque fois)</li>
+</ul>
+</section>
+
+<section>
+<h3>De la mise en cache pour les dégradés (2)</h3>
+<p>
+  Après, pour un nouveau dégradé:
+</p>
+<ul class=incremental>
+  <li> <code>stylesheet.css</code> (au chargement)
+  <li> Tokenizer, Parser (au chargement)
+  <li> Calcul du dégradé (chaque fois)
+  <li> <strong>Mise en cache (la première fois)</strong>
+  <li> Rendu du dégradé (chaque fois)
+  <li> Composition des différentes <em>layers</em> (chaque fois)
+</ul>
+</section>
+
+<section>
+<h3>De la mise en cache pour les dégradés (3)</h3>
+<p>
+  Après, pour un dégradé récemment calculé:
+</p>
+<ul class=incremental>
+  <li> <code>stylesheet.css</code> (au chargement)
+  <li> Tokenizer, Parser (au chargement)
+  <li> <del>Calcul du dégradé (chaque fois) </del>
+  <li> <strong>Prise du dégradé dans le cache</strong> (chaque fois)
+  <li> Rendu du dégradé (chaque fois)
+  <li> Composition des différentes <em>layers</em> (chaque fois)
+</ul>
+<p> Augmentation des performances, principalement sur Windows 7</p>
+</section>
+
+
+<section>
+<h1> Optimisation du dessin des ombres </h1>
+<h1><code>$ cd gfx/2d/</code></h1>
+</section>
+
+<section>
+<h3>Un algorithme de <em>box blur</em> plus rapide</h3>
+  <div class=boxdemo>
+    box-shadow: 0px 0px 10px black;
+  </div>
+  <div class=boxdemo2>
+    box-shadow: 4px 4px 4px rgb(230, 60, 10);
+  </div>
+  <div class=boxdemo3>
+    box-shadow: inset 0px 0px 4px black;
+  </div>
+  <span class=boxdemo4>
+    text-shadow: 0px 0px 5px red;
+  </span>
+  <span class=boxdemo5>
+    text-shadow: 10px 10px 2px black;
+  </span>
+<div>
+</section>
+
+<section>
+<h3> Augmentation du nombre de FPS </h3>
+<ul class=incremental>
+  <li> Utilisation d'outils de profiling: <code>gprof</code>,
+  <code>valgrind</code>, <code>cachegrind</code>
+  <li> Analyse de l'utilisation des caches CPU, et code "pour le compilateur"
+  <ul>
+    <li> Faire comprendre au compilateur l'opération que l'on veut effectuer
+    <li> Prefetching, déroulage de boucles, prediction de stride, combinaison
+    d'écritures.
+  </ul>
+  <li> Vitesse environ doublée, d'autres optimisations possibles si besoin
+</ul>
+</section>
+
+<section>
+<h3>Conclusion</h3>
+<ul class=incremental>
+  <li> Un stage extrêmement riche, complexe, prenant
+  <li> Mais <em>vraiement</em> besoin d'autonomie
+  <li> Accueil dans l'entreprise exceptionnel
+  <li> Conditions de travail <em>à l'américaine</em>
+  <li> Une liberté presque total, motivation très haute
+  <li> Des gens fabuleux, au niveau technique et humain
+</ul>
+</section>
+
+<section>
+<h1>Questions ?</h1>
+  <img class=center src="/logo-only.png" width=400px height=400px
+style="margin-top: 1em;">
 </section>
 
 <!-- Your Style -->
 <!-- Define the style of your presentation -->
 
 <!-- Maybe a font from http://www.google.com/webfonts ? -->
-<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+<!--<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>-->
 
 <style>
+  p {
+    margin: 1em 1em;
+  }
+  li.pros {
+    list-style:none;
+  }
+  li.pros:before {
+    content:"+";
+  }
+
+  li.cons {
+    list-style:none;
+  }
+
+  li.cons:before {
+    content:"–";
+  }
+
+@font-face {
+  font-family: 'bodycopy';
+  src: url('fonts/SourceSansPro-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'bodycopy';
+  src: url('fonts/SourceSansPro-LightItalic.ttf');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+    font-family: 'Title';
+    src: url('fonts/Hlt.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+  html {
+    background-color: black;
+    color: white;
+  }
+  body { background-image: url(images/bg.png);}
+  /* A section is a slide. It's size is 800x600, and this will never change */
+  section {
+      /* The font from Google */
+      font-family: 'bodycopy', arial, serif;
+      font-size: 40px;
+  }
+
+  h1, h2 {
+    margin-top: 100px;
+    text-align: center;
+    font-family: 'Title', arial, serif;
+    font-style: normal;
+    font-size: 45px;
+    font-weight: 400;
+  }
+
+  code {
+    font-family: courier;
+  }
+
+  h3 {
+    margin: 20px 0 20px 50px;
+    font-family: 'Title', arial, serif;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+
+  a {
+    color: black;
+  }
+  a:visited {
+     color: gray;
+  }
+
+  .bigfat {
+    font-family: "Yanone";
+    font-size: 3em;
+    color: black;
+  }
+  header {
+    position: absolute;
+    top: 10px;
+    font-family: "Yanone";
+  }
+  img.schema {
+    background-color: transparent;
+    position: relative;
+    top: 0;
+    left: 50px;
+  }
+  img.logo {
+    background-color: transparent;
+    position: relative;
+    top: 0;
+    left: 50px;
+  }
+
+  span.m {
+    font-family: serif;
+    font-style: italic;
+    hyphens: none;
+    -moz-hyphens: none;
+    word-wrap: normal;
+  }
+
+  ul ul li {
+    font-size: 0.9em;
+  }
+
+  ul.nobullet {
+    margin-left: 0px;
+    list-style: none;
+    color: black;
+    text-align: center;
+    margin: 30px 0px;
+  }
+
+
+  .left {
+    float: left;
+    left: 20px;
+    font-family: "Title", Arial;
+  }
+
+  .right {
+    float: right;
+    right: 20px;
+    font-family: "Title", Arial;
+  }
+
+  
+  ul, ol {
+      margin: 30px 100px;
+  }
+
+  li > ul {
+    margin: 0px 50px;
+  }
+
+  q {
+    display: inline-block;
+    width: 700px;
+    height: 600px;
+    background-color: black;
+    color: white;
+    font-size: 60px;
+    padding: 50px;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+  }
+
+  /* Transition effect */
+  /* Feel free to change the transition effect for original
+     animations. See here:
+     https://developer.mozilla.org/en/CSS/CSS_transitions
+     How to use CSS3 Transitions: */
+  section {
+      -moz-transition: left 400ms ease 0s;
+      -webkit-transition: left 400ms ease 0s;
+      -ms-transition: left 400ms ease 0s;
+      transition: left 400ms ease 0s;
+  }
+
+  /* Before */
+  section { left: -150%; }
+  /* Now */
+  section[aria-selected] { left: 0; }
+  /* After */
+  section[aria-selected] ~ section { left: +150%; }
+
+  /* Incremental elements */
+
+  /* By default, visible */
+  .incremental > * {
+    -moz-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    opacity: 0.8;
+  }
+
+  /* The current item */
+  .incremental > *[aria-selected] {
+    -moz-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    color: white;
+    text-shadow: 0px 0px 4px black;
+    opacity: 1;
+  }
+
+  /* The items to-be-selected */
+  .incremental > *[aria-selected] ~ * { -moz-transition: opacity 0.5s; opacity: 0.2; }
+.boxdemo {
+  background: white;
+  margin: 1em auto;
+  width: 300px;
+  height: 100px;
+  box-shadow: 0px 0px 10px black;
+  border: 1px solid black;
+  text-align: center;
+  color: #4d98fd;
+  font-family: "Title";
+  padding-top: 0.5em;
+}
+.boxdemo2 {
+  color: #4d98fd;
+  background: white;
+  margin: 1em auto;
+  text-align: center;
+  margin: 1em auto;
+  width: 300px;
+  height: 100px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 4px white;
+  font-family: "Title";
+  padding-top: 0.5em;
+}
+
+.boxdemo3 {
+  padding-top: 0.5em;
+  color: #4d98fd;
+  background: white;
+  margin: 1em auto;
+  text-align: center;
+  margin: 1em auto;
+  width: 300px;
+  height: 100px;
+  border: 1px solid black;
+  box-shadow: inset 0px 0px 15px black;
+  font-family: "Title";
+}
+
+.boxdemo4 {
+  margin: 1em 0.5em;
+  margin-left: 4em;
+  width: 300px;
+  height: 100px;
+  text-shadow: 0px 0px 5px red;
+  font-size: 0.7em;
+}
+
+.boxdemo5 {
+  font-size: 0.7em;
+  margin: 1em 0.5em;
+  height: 100px;
+  text-shadow: 10px 10px 2px black;
+}
+
+.center {
+  margin: 0 auto;
+  display: block;
+}
+
+.centergradient {
+  margin: 0 auto;
+  width: 50%;
+}
+
+.gradient1 {
+  box-shadow: 4px 4px 4px black;
+  margin-right: 1em;
+  display:inline-block;
+  width:  150px;
+  height: 150px;
+  background: linear-gradient(to bottom, #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%);
+}
+.gradient2 {
+  box-shadow: 4px 4px 4px black;
+  display:inline-block;
+  width:  150px;
+  height: 150px;
+  background: radial-gradient(ellipse at center, #f0b7a1 0%,#8c3310 50%,#752201 51%,#bf6e4e 100%);
+}
+.gradient3 {
+  margin-right: 1em;
+  display:inline-block;
+  box-shadow: 4px 4px 4px black;
+  width:  150px;
+  height: 150px;
+  background: linear-gradient(135deg, #a90329 0%,#8f0222 44%,#6d0019 100%);
+}
+.gradient4 {
+  box-shadow: 4px 4px 4px black;
+  display:inline-block;
+  width:  150px;
+  height: 150px;
+background: linear-gradient(to right, rgba(30,87,153,0) 0%,rgba(30,87,153,0.8) 15%,rgba(30,87,153,1) 19%,rgba(30,87,153,1) 20%,rgba(41,137,216,1) 50%,rgba(30,87,153,1) 80%,rgba(30,87,153,1) 81%,rgba(30,87,153,0.8) 85%,rgba(30,87,153,0) 100%);
+}
+
   html, .view body { background-color: black; counter-reset: slideidx; }
   body, .view section { background-color: white; border-radius: 12px }
   /* A section is a slide. It's size is 800x600, and this will never change */
   section, .view head > title {
-      /* The font from Google */
-      font-family: 'Oswald', arial, serif;
       font-size: 30px;
   }
 
   .rotate {
-    height: 50%;
+    width: 70%;
       box-shadow: 0px 0px 30px black;
       border-radius: 30px;
       -moz-transition: all 3s ease-in;
       transform-style: preserve-3d;
       -moz-perspective: 800px;
       -moz-perspective-origin: 50% 50%;
+      margin: 0 auto;
+      display: block;
   }
 
-  .rotate:hover {
+  .activated {
     -moz-transition: all 3s ease-in;
      -moz-transform: rotateY(-1800deg) rotateX(180deg);
   }
@@ -248,112 +729,11 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
     font-size: 18px;
   }
 
-
-  .view section:after {
-    counter-increment: slideidx;
-    content: counter(slideidx, decimal-leading-zero);
-    position: absolute; bottom: -80px; right: 100px;
-    color: white;
-  }
-
   section:before {
     /* Enable the slides numbering by uncommenting below */
-    /* visibility: visible; */
-    /* content: counter(slideidx); */
+    visibility: visible;
+    content: counter(slideidx);
   }
-
-  .view head > title {
-    color: white;
-    text-align: center;
-    margin: 1em 0 1em 0;
-  }
-
-  .center {
-    display: block;
-    margin: 0px auto;
-  }
-
-  h1, h2 {
-    margin-top: 200px;
-    text-align: center;
-    font-size: 40px;
-  }
-  h3 {
-    margin: 0em 1em;
-  }
-
-  ul {
-      margin: 2em 2em;
-  }
-
-  p {
-    margin: 35px 45px;
-    font-size: 30px;
-  }
-
-  blockquote {
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-size: 60px;
-    padding: 50px;
-  }
-  blockquote:before {
-    content: open-quote;
-  }
-  blockquote:after {
-    content: close-quote;
-  }
-
-  footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 40px;
-    text-align: right;
-    background-color: #F3F4F8;
-    border-top: 1px solid #CCC;
-  }
-
-  /* Transition effect */
-  /* Feel free to change the transition effect for original
-     animations. See here:
-     https://developer.mozilla.org/en/CSS/CSS_transitions
-     How to use CSS3 Transitions: */
-  section {
-    -moz-transition: left 400ms linear 0s;
-    -webkit-transition: left 400ms linear 0s;
-    -ms-transition: left 400ms linear 0s;
-    transition: left 400ms linear 0s;
-  }
-  .view section {
-    -moz-transition: none;
-    -webkit-transition: none;
-    -ms-transition: none;
-    transition: none;
-  }
-
-  .view section[aria-selected] {
-    border: 5px red solid;
-  }
-
-  /* Before */
-  section { left: -150%; }
-  /* Now */
-  section[aria-selected] { left: 0; }
-  /* After */
-  section[aria-selected] ~ section { left: +150%; }
-
-  /* Incremental elements */
-
-  /* By default, visible */
-  .incremental > * { opacity: 1; }
-
-  /* The current item */
-  .incremental > *[aria-selected] { opacity: 1; }
-
-  /* The items to-be-selected */
-  .incremental > *[aria-selected] ~ * { opacity: 0; }
 
   /* The progressbar, at the bottom of the slides, show the global
      progress of the presentation. */
@@ -452,7 +832,8 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
     position: absolute;
   }
   video {
-    width: 100%; height: 100%;
+    margin: 0 auto;
+    width: 100%;
   }
 
   section:before {
@@ -477,7 +858,7 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
     slides: null,
     progressBar : null,
     params: {
-      autoplay: "1"
+      autoplay: "0"
     }
   };
 
@@ -493,12 +874,11 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
     this.setupView();
     vid = new Bubbles.video("manifesto")
     vid.subtitles( false, {
-    "French" : {
-      language  : "French",
-      file    : "french.srt"
-    }
-  }
-);
+      "French" : {
+        language  : "French",
+        file    : "french.srt"
+      }
+    });
 
   }
 
@@ -867,6 +1247,17 @@ src="https://bugzilla.mozilla.org/buglist.cgi?list_id=4336892;resolution=FIXED;e
 
   $$.forEach = function(nodeList, fun) {
     Array.prototype.forEach.call(nodeList, fun);
+  }
+
+  function rotate() {
+    var v = document.querySelector(".rotate");
+    v.play();
+    setTimeout(function() {
+      v.className += " activated";
+      setTimeout(function() {
+        v.className = "rotate";
+      }, 5000);
+    }, 5000);
   }
 
 </script>
